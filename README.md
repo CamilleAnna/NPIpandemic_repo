@@ -4,7 +4,9 @@
 
  
 ## scripts
- 
+
+All statistical analyses and simulations were run in R version 4.0.1
+
  - **Statistical analyses**
  	- TBC
 	
