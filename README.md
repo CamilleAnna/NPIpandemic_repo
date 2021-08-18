@@ -39,5 +39,5 @@ data sources in mobility analysis script.
 
 - **countryList_csv.csv**: countries codes list to use with "ggflags" in codes producing figure 1
 - **MobilityInterventionsDF_MS.csv**:  mobility dataset used in mobility analysis
-Interventions policies and times loaded from shared drive at: https://docs.google.com/spreadsheets/d/1LKTv_4-aC1I_Ld2HZAWs7yBkOb9fBELIV8bIEdDTykc/edit?usp=sharing
+Interventions policies and times are accessible at: https://docs.google.com/spreadsheets/d/1LKTv_4-aC1I_Ld2HZAWs7yBkOb9fBELIV8bIEdDTykc/edit?usp=sharing
 
