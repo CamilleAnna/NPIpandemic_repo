@@ -1,7 +1,15 @@
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+#   Social dilemmas in non-pharmaceutical interventions to tackle epidemics
+#                     Simonet C, Sweeny A, McNally L (2021)
+#          Analysing effects of mobility on stringency and vice versa 
+#                         Script: Amy Sweeny
+#  
+#         last edited: August, 18th, 2021 (C.S: edited figures layout and colors)
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
-## Analysing effects of mobility on stringency and vice versa 
 
 setwd('path/to/repo') # setwd('~/Documents/PhD/Research/Covid19/NPIsocialDilemma_repo/')
+
 
 # packages ----------------------------------------------------------------
 
@@ -185,13 +193,13 @@ ModEfx<- MobModOutDF %>%
   filter(variable %in% c("StringencyIndexForDisplay", "meanActivityRawNonRes")) %>% 
   ggplot(., aes(x=variable, y=post.mean, colour=model)) + 
   geom_point(size=1, position = position_dodge(width=0.2)) + 
-  geom_hline(linetype="dashed", yintercept=0, size = 0.4)+
+  geom_hline(linetype="dashed", yintercept=0, size = 0.25)+
   geom_errorbar(aes(ymax=upperCI95, ymin=lowerCI95),
                 width=0.15, size=0.5, position = position_dodge(width=0.1)) + 
   scale_x_discrete(limits=c("StringencyIndexForDisplay", "meanActivityRawNonRes"), 
                    labels=c("Stringency\nIndex", "Mean\nActivity")) + 
-  scale_colour_manual(values=sparkPal[c(7,5)], name="Model Response") + 
-  #scale_colour_manual(values=c('dodgerblue', 'firebrick'), name="Model Response") + 
+  #scale_colour_manual(values=sparkPal[c(7,5)], name="Model Response") + 
+  scale_colour_manual(values=c('black', 'darkgrey'), name="Model Response") + 
   theme_tufte() + 
   labs(y="Estimate", x="Fixed Effect") + 
   theme(text=element_text(family= "Helvetica"),
@@ -206,7 +214,7 @@ ModEfx<- MobModOutDF %>%
         legend.key.width  = unit(0.4, "cm"))  
 
 
-pdf('./output/figures/Figure2C_modelEffects.pdf', width = 5.75/2.55, height = 4/2.55)
+pdf('./output/figures/Figure2C_modelEffects.pdf', width = 5.8/2.55, height = 3.8/2.55)
 ModEfx
 dev.off()
 
@@ -498,13 +506,14 @@ NarrativeDF$MobilityCategory<- factor(NarrativeDF$MobilityCategory, levels = Mob
 NarrativeSparkUK <- 
   NarrativeDF %>% filter(CountryName==NarrativeLocalities[11])  %>% 
   ggplot()  + 
+  facet_grid(MobilityCategory ~ ., scales="free_y", switch = "y", labeller=label_wrap_gen(width=10)) +
+  annotate("rect", xmin = as.Date(datesZoomMajor[1]), xmax = as.Date(datesZoomMajor[2]), ymin = -Inf, ymax = Inf, fill = 'cornsilk', alpha = 0.8)+
   geom_line(aes(x=as.Date(Date), y=DiffBaseline, group=MobilityCategory), 
             size=0.4, colour="grey40") + 
-  facet_grid(MobilityCategory ~ ., scales="free_y", switch = "y", labeller=label_wrap_gen(width=10)) + 
   geom_vline(data=InterventionTimes %>% filter(Country==NarrativeLocalities[11]), 
-             aes(xintercept=as.Date(Date), colour=Type), size=0.4) + 
+             aes(xintercept=as.Date(Date), colour=Type), size=0.3) + 
   geom_vline(data=InterventionTimes %>% filter(Country==NarrativeLocalities[11]) %>% filter(Type == 'Public events banned'), 
-             aes(xintercept=as.Date(Date), colour=Type, label=DateDescription), size=0.4, alpha=1, lty = 'dashed')+
+             aes(xintercept=as.Date(Date), colour=Type, label=DateDescription), size=0.3, alpha=1, lty = 'dashed')+
   geom_point(data=starts %>% filter(CountryName==NarrativeLocalities[11], MobilityCategory %in% MobilityCats), 
              aes(x=as.Date(Date), y=DiffBaseline), size=0.7) + 
   geom_point(data=ends %>% filter(CountryName==NarrativeLocalities[11], MobilityCategory %in% MobilityCats), 
@@ -515,13 +524,17 @@ NarrativeSparkUK <-
   geom_text(data=ends %>% filter(CountryName==NarrativeLocalities[11], MobilityCategory %in% MobilityCats), 
             aes(x=as.Date(Date)+4, y=DiffBaseline, #colour=MobilityCategory,
                 label=DiffBaseline), size=1.6, hjust = 'left') + 
-  annotate("rect", xmin = as.Date(datesZoomMajor[1]), xmax = as.Date(datesZoomMajor[2]), ymin = -Inf, ymax = Inf, alpha = 0.1) +
   scale_x_date(breaks=as.Date(datesXmajor), name="Date", expand=c(0,10)) + 
   #scale_y_continuous(expand = c(0.4, 0)) + 
   #scale_colour_manual(values=NarrativePal, name="Intervention Type")+
-  scale_colour_manual(values=NarrativePal[c(1:4, 11)], name="Intervention Type", limits=Colours[8:12], 
+  #scale_colour_manual(values=NarrativePal[c(1:4, 11)], name="Intervention Type", limits=Colours[8:12], 
+  #                    labels=c(InterventionCats)) + 
+  #scale_colour_manual(values=c("#D55E00", '#E69F00', '#0072B2', '#009E73', '#56B4E9'), name="Intervention Type", limits=Colours[8:12], 
+  #                    labels=c(InterventionCats)) + 
+  scale_colour_manual(values=c( 'darksalmon', "gold2", 'firebrick', 'cornflowerblue', 'aquamarine3'), name="Intervention Type", limits=Colours[8:12], 
                       labels=c(InterventionCats)) + 
-  
+  #scale_colour_npg( name="Intervention Type", limits=Colours[8:12], 
+  #                    labels=c(InterventionCats)) + 
   theme_tufte(base_size = 12) + 
   #ggtitle(paste(NarrativeLocalities[11], "Event Narrative", sep=" ")) + 
   theme(text=element_text(family="Helvetica"), 
@@ -538,6 +551,7 @@ NarrativeSparkUK <-
   guides(colour=guide_legend(nrow=2))
   
 
+NarrativeSparkUK
 
 pdf('./output/figures/Figure2A_sparkLinesUK.pdf', width = 6.5/2.55, height = 11/2.55)
 NarrativeSparkUK
@@ -569,22 +583,29 @@ UKMobilityModDF<- MobilityModDF %>%
 
 UKMobilityModDFstartStop<- UKMobilityModDF[c(1, nrow(UKMobilityModDF)),]
 
+
 NarrativeZoomUK <- UKMobilityModDF %>% 
   ggplot() + 
+  annotate("rect", xmin = as.Date(datesZoomMajor[1]), xmax = as.Date(datesZoomMajor[2]), ymin = -Inf, ymax = Inf, fill = 'cornsilk', alpha = 0.8)+
   geom_line(aes(x=as.Date(Date), y=meanActivityRawNonRes), 
-            size=0.4, colour=sparkPal[6]) +
-  geom_point(data = UKMobilityModDFstartStop, aes(x = as.Date(Date), y = meanActivityRawNonRes), size = 0.5, col = sparkPal[6])+
+            size=0.4, colour='black')+#sparkPal[6]) +
+  geom_point(data = UKMobilityModDFstartStop, aes(x = as.Date(Date), y = meanActivityRawNonRes), size = 0.5, col = 'black')+#sparkPal[6])+
+ 
   geom_line(data = UKMobilityModDF, aes(x=as.Date(Date), y=StringencyIndexForDisplay), 
-            size=0.4, colour=sparkPal[7]) +
-  geom_point(data = UKMobilityModDFstartStop, aes(x = as.Date(Date), y = StringencyIndexForDisplay), size = 0.5, col = sparkPal[7])+
+            size=0.4, colour='darkgrey')+#sparkPal[7]) +
+  geom_point(data = UKMobilityModDFstartStop, aes(x = as.Date(Date), y = StringencyIndexForDisplay), size = 0.5, col = 'darkgrey')+#sparkPal[7])+
+  
   geom_vline(data=InterventionTimes %>% filter(Country==NarrativeLocalities[11]), 
-             aes(xintercept=as.Date(Date), colour=Type, label=DateDescription), size=0.5, alpha=1) + 
+             aes(xintercept=as.Date(Date), colour=Type, label=DateDescription), size=0.4, alpha=1) + 
   geom_vline(data=InterventionTimes %>% filter(Country==NarrativeLocalities[11]) %>% filter(Type == 'Public events banned'), 
-             aes(xintercept=as.Date(Date), colour=Type, label=DateDescription), size=0.5, alpha=1, lty = 'dashed') + 
+             aes(xintercept=as.Date(Date), colour=Type, label=DateDescription), size=0.4, alpha=1, lty = 'dashed') + 
+  
   scale_x_date(breaks=as.Date(datesZoomMajor), minor_breaks = as.Date(datesZoomMinor), name="Date", expand=c(0,0.5)) + 
   scale_y_continuous(expand = c(0.2, 0)) + 
-  scale_colour_manual(values=NarrativePal[c(1:4, 11)], name="Intervention Type", limits=Colours[8:12], 
-                      labels=c(InterventionCats))+ 
+  #scale_colour_manual(values=NarrativePal[c(1:4, 11)], name="Intervention Type", limits=Colours[8:12], 
+  #                    labels=c(InterventionCats))+ 
+  scale_colour_manual(values=c( 'darksalmon', "gold2", 'firebrick', 'cornflowerblue', 'aquamarine3'), name="Intervention Type", limits=Colours[8:12], 
+                      labels=c(InterventionCats)) + 
   theme_tufte(base_size = 12) + 
   annotate("text", x=as.Date(xvals[1:4]), y=c(rep(RoundTo(min(yvals), 5, floor), 4)), 
                 label=c("1", "2", "3", "4,5"), hjust=1.2, vjust=0.8, size=1.5) + 

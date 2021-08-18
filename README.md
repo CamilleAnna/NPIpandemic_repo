@@ -8,7 +8,8 @@
 All statistical analyses and simulations were run in R version 4.0.1
 
  - **Statistical analyses**
- 	- TBC
+ 	- **1_mobilityAnalysis.R**: mobility data analysis and codes producing manuscript figures
+	- **CleanMCMC.R**: utility function sourced in above script
 	
 - **SIR models**
 	- **2_mathematical_model.R**: main model simulations
@@ -30,8 +31,13 @@ All statistical analyses and simulations were run in R version 4.0.1
 	- **SD_various_alphas_nbIni_60000_timeSim_800.RData**: runs of social distancing intervention with various C and alpha values (supp. figure heatmaps)
 	- **TTI_various_tau_ptest_0.7_nbIni_60000_timeSim_800.RDat**a: runs of Test-Trace-Isolate intervention with various C and Tau values (supp. figure heatmaps)
 
+- **mobility_analysis**: summary of statistical model for mobility analysis + R object file of MCMCglmm model output ( all outputs of script "1_mobilityAnalysis.R")
 
 ## data
 
-TBC ...
+data sources in mobility analysis script.
+
+- **countryList_csv.csv**: countries codes list to use with "ggflags" in codes producing figure 1
+- **MobilityInterventionsDF_MS.csv**:  mobility dataset used in mobility analysis
+Interventions policies and times loaded from shared drive at: https://docs.google.com/spreadsheets/d/1LKTv_4-aC1I_Ld2HZAWs7yBkOb9fBELIV8bIEdDTykc/edit?usp=sharing
 
