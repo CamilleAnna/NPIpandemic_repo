@@ -203,8 +203,8 @@ ModEfx<- MobModOutDF %>%
   theme_tufte() + 
   labs(y="Estimate", x="Fixed Effect") + 
   theme(text=element_text(family= "Helvetica"),
-        axis.text = element_text(colour = 'black', size = 5),
-        axis.title = element_text(colour = 'black', size = 6),
+        axis.text = element_text(colour = 'black', size = 6),
+        axis.title = element_text(colour = 'black', size = 7),
         #axis.line = element_line(size = 0.3),
         axis.ticks = element_line(size = 0.4),
         axis.ticks.length=unit(.05, "cm"),
@@ -214,7 +214,7 @@ ModEfx<- MobModOutDF %>%
         legend.key.width  = unit(0.4, "cm"))  
 
 
-pdf('./output/figures/Figure2C_modelEffects.pdf', width = 5.8/2.55, height = 3.8/2.55)
+pdf('./output/figures/Figure2C_modelEffects3.pdf', width = 6.5/2.55, height = 3.8/2.55)
 ModEfx
 dev.off()
 
@@ -351,17 +351,17 @@ SparkPlots<-lapply(1:length(mobilityLocalities),
                        mobilityLongRaw %>% filter(CountryName==mobilityLocalities[i]) %>% 
                        ggplot()  + 
                        geom_line(aes(x=as.Date(Date), y=DiffBaseline, colour=MobilityCategory, group=MobilityCategory), 
-                                 size=0.8) + 
+                                 size=0.6) + 
                        geom_point(data=starts %>% filter(CountryName==mobilityLocalities[i]), 
                                   aes(x=as.Date(Date), y=DiffBaseline, colour=MobilityCategory), size=2) + 
                        geom_point(data=ends %>% filter(CountryName==mobilityLocalities[i]), 
                                   aes(x=as.Date(Date), y=DiffBaseline, colour=MobilityCategory), size=2) + 
                        geom_text(data=starts %>% filter(CountryName==mobilityLocalities[i]), 
                                  aes(x=as.Date(Date), y=DiffBaseline, #colour=MobilityCategory, 
-                                     label=DiffBaseline), hjust=1.2, vjust=0.8, size=3) + 
+                                     label=DiffBaseline), hjust=1.2, vjust=0.8, size=2) + 
                        geom_text(data=ends %>% filter(CountryName==mobilityLocalities[i]), 
                                  aes(x=as.Date(Date), y=DiffBaseline, #colour=MobilityCategory,
-                                     label=DiffBaseline), hjust=-0.3, size=3) + 
+                                     label=DiffBaseline), hjust=-0.3, size=2) + 
                        facet_grid(MobilityCategory ~ ., scales="free_y") + 
                        #scale_x_date(breaks=as.Date(datesXmajor), name="Date") + 
                        scale_y_continuous(expand = c(0.4, 0)) + 
@@ -369,23 +369,34 @@ SparkPlots<-lapply(1:length(mobilityLocalities),
                        scale_colour_manual(values=sparkPal, name="Category", labels=mobilityCatClean)+ 
                        theme_tufte(base_size = 12) + 
                        theme(text=element_text(family="Helvetica"), 
-                             legend.position = "none", 
+                             #legend.position = "none", 
                              axis.title = element_blank(), 
                              axis.text.y = element_blank(),
                              strip.text = element_blank(), 
                              axis.ticks.y=element_blank(), 
                              axis.text.x = element_blank(), 
-                             axis.ticks.x=element_blank()) + 
+                             axis.ticks.x=element_blank(),
+                             legend.text = element_text(size = 6)) + 
                        ggtitle(mobilityLocalities[i]) 
                    }) 
 
 
-legend <- get_legend(SparkPlots[[1]]) # have to grab before removing legend above run with then without legends 
-SparkPlots[[128]] <-legend
+#legend <- get_legend(SparkPlots[[1]]) # have to grab before removing legend above run with then without legends 
+#SparkPlots[[128]] <-legend
 
-require(cowplot)
-plot_grid(plotlist=SparkPlots[1:128], nrow=12, ncol=12) + 
-  ggsave("./output/figures/SparkPlotsAll.png", units="mm", height=1000, width=1000, dpi=400)
+#require(cowplot)
+#plot_grid(plotlist=SparkPlots[1:128], nrow=12, ncol=12) + 
+#  ggsave("./output/figures/SparkPlotsAll.png", units="mm", height=1000, width=1000, dpi=400)
+
+
+pdf('./output/figures/ElectronicFigureSupplement_TimeSeries_allCountries.pdf', width = 11/2.55, height = 8/2.55)
+for(i in 1:length(SparkPlots)){
+  print(i)
+  print(SparkPlots[i])
+}
+dev.off()
+
+
 
 
 #sparkline UK 
@@ -420,15 +431,15 @@ SparkPlotUK  <-
         axis.ticks.y=element_blank(), 
         title = element_text(hjust=5)) 
 
-SparkPlotUK <-addSmallLegend(SparkPlotUK) 
-SparkPlotUK + ggsave("ManuscriptFigures/SparkPlotUK.png", units="mm", height=300, width=250, dpi=300)
+#SparkPlotUK <-addSmallLegend(SparkPlotUK) 
+#SparkPlotUK + ggsave("ManuscriptFigures/SparkPlotUK.png", units="mm", height=300, width=250, dpi=300)
 
 
 ## ComboFig 
-right_col <- SparkPlotUK/ModEfx + plot_layout(heights = c(1.2, 0.6)) 
-ComboFig <- (CountryCorr + plot_layout(tag_level = 'new') | (right_col)) + plot_layout(widths = c(2, 1)) #+ plot_layout(tag_level = 'new')  
-ComboFig + plot_annotation(tag_levels = c("A", "1")) & theme(plot.tag = element_text(size = 12)) + 
-  ggsave("./output/figures/PanelPlot.png", units="mm", height=300, width=360, dpi=300)
+#right_col <- SparkPlotUK/ModEfx + plot_layout(heights = c(1.2, 0.6)) 
+#ComboFig <- (CountryCorr + plot_layout(tag_level = 'new') | (right_col)) + plot_layout(widths = c(2, 1)) #+ plot_layout(tag_level = 'new')  
+#ComboFig + plot_annotation(tag_levels = c("A", "1")) & theme(plot.tag = element_text(size = 12)) + 
+#  ggsave("./output/figures/PanelPlot.png", units="mm", height=300, width=360, dpi=300)
 
 
 
@@ -503,11 +514,14 @@ NarrativeDF$MobilityCategory<- factor(NarrativeDF$MobilityCategory, levels = Mob
 
 # SPARK UK ----
 
+colorRampPalette(c("white", "cornsilk"))(10)
+
+
 NarrativeSparkUK <- 
   NarrativeDF %>% filter(CountryName==NarrativeLocalities[11])  %>% 
   ggplot()  + 
   facet_grid(MobilityCategory ~ ., scales="free_y", switch = "y", labeller=label_wrap_gen(width=10)) +
-  annotate("rect", xmin = as.Date(datesZoomMajor[1]), xmax = as.Date(datesZoomMajor[2]), ymin = -Inf, ymax = Inf, fill = 'cornsilk', alpha = 0.8)+
+  annotate("rect", xmin = as.Date(datesZoomMajor[1]), xmax = as.Date(datesZoomMajor[2]), ymin = -Inf, ymax = Inf, fill = '#FFFBEB')+
   geom_line(aes(x=as.Date(Date), y=DiffBaseline, group=MobilityCategory), 
             size=0.4, colour="grey40") + 
   geom_vline(data=InterventionTimes %>% filter(Country==NarrativeLocalities[11]), 
@@ -540,12 +554,12 @@ NarrativeSparkUK <-
   theme(text=element_text(family="Helvetica"), 
         legend.position = "none", 
         legend.box="vertical", legend.margin=margin(), 
-        strip.text.y = element_text(size=6, colour = 'black'),
-        axis.text = element_text(size = 6, colour = 'black'),
+        strip.text.y = element_text(size=7, colour = 'black'),
+        axis.text = element_text(size = 7, colour = 'black'),
         #axis.title = element_blank(), 
         axis.text.y = element_blank(),
         #strip.text = element_blank(),
-        axis.ticks.x=element_line(colour = 'black', size = 0.3), 
+        axis.ticks.x=element_line(colour = 'black', size = 0.4), 
         axis.ticks.y=element_blank(), 
         title = element_text(hjust=5)) +
   guides(colour=guide_legend(nrow=2))
@@ -553,7 +567,7 @@ NarrativeSparkUK <-
 
 NarrativeSparkUK
 
-pdf('./output/figures/Figure2A_sparkLinesUK.pdf', width = 6.5/2.55, height = 11/2.55)
+pdf('./output/figures/Figure2A_sparkLinesUK.pdf', width = 6.5/2.55, height = 11.2/2.55)
 NarrativeSparkUK
 dev.off()
 
@@ -586,7 +600,7 @@ UKMobilityModDFstartStop<- UKMobilityModDF[c(1, nrow(UKMobilityModDF)),]
 
 NarrativeZoomUK <- UKMobilityModDF %>% 
   ggplot() + 
-  annotate("rect", xmin = as.Date(datesZoomMajor[1]), xmax = as.Date(datesZoomMajor[2]), ymin = -Inf, ymax = Inf, fill = 'cornsilk', alpha = 0.8)+
+  annotate("rect", xmin = as.Date(datesZoomMajor[1]), xmax = as.Date(datesZoomMajor[2]), ymin = -Inf, ymax = Inf, fill = '#FFFBEB')+
   geom_line(aes(x=as.Date(Date), y=meanActivityRawNonRes), 
             size=0.4, colour='black')+#sparkPal[6]) +
   geom_point(data = UKMobilityModDFstartStop, aes(x = as.Date(Date), y = meanActivityRawNonRes), size = 0.5, col = 'black')+#sparkPal[6])+

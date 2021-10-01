@@ -407,7 +407,7 @@ cex.labels = 1
 
 # plots a 4x4 heatmap grid for increase values of cost of compliance (C) and increasing intervention efficacy (alpha)
 
-pdf('./output/figures/FigureS2_SD_heatmap_vary_alpha.pdf', width = (13+1+1)/2.54, height = (13+1+1)/2.54, pointsize = 7)
+pdf('./output/figures/FigureS1_SD_heatmap_vary_alpha.pdf', width = (13+1+1)/2.54, height = (13+1+1)/2.54, pointsize = 7)
 close.screen(all.screens = TRUE)
 split.screen(m)
 par(omi = rep(1/2.54,4))
@@ -598,7 +598,7 @@ fty = 2
 cex.labels = 1
 
 
-pdf('./output/figures/FigureS3_SD_IP_heatmap_vary_alpha.pdf', width = (13+1+1)/2.54, height = (13+1+1)/2.54, pointsize = 7)
+pdf('./output/figures/FigureS2_SD_IP_heatmap_vary_alpha.pdf', width = (13+1+1)/2.54, height = (13+1+1)/2.54, pointsize = 7)
 close.screen(all.screens = TRUE)
 split.screen(m)
 par(omi = rep(1/2.54,4))
@@ -788,7 +788,7 @@ fty = 2
 cex.labels = 1
 
 
-pdf('./output/figures/FigureS4_TTI_heatmap_vary_tau.pdf', width = (13+1+1)/2.54, height = (13+1+1)/2.54, pointsize = 7)
+pdf('./output/figures/FigureS3_TTI_heatmap_vary_tau.pdf', width = (13+1+1)/2.54, height = (13+1+1)/2.54, pointsize = 7)
 close.screen(all.screens = TRUE)
 split.screen(m)
 par(omi = rep(1/2.54,4))
@@ -985,7 +985,7 @@ fty = 2
 cex.labels = 1
 
 
-pdf('./output/figures/FigureS5_TTI_IP_heatmap_vary_tau.pdf', width = (13+1+1)/2.54, height = (13+1+1)/2.54, pointsize = 7)
+pdf('./output/figures/FigureS4_TTI_IP_heatmap_vary_tau.pdf', width = (13+1+1)/2.54, height = (13+1+1)/2.54, pointsize = 7)
 close.screen(all.screens = TRUE)
 split.screen(m)
 par(omi = rep(1/2.54,4))

@@ -9,7 +9,7 @@
 # Script summary
 # 
 
-setwd('path/to/repo') # setwd('~/Documents/PhD/Research/Covid19/NPIpandemic_repo/')
+setwd('path/to/repo') # setwd('~/Documents/PhD/Research/Covid19/NPIsocialDilemma_repo/')
 library(readxl); library(ggplot2); library(dplyr); library(tidyr);library(Rmisc); library(lubridate);library(plotly);library(yarrr); library(knitr);library(plyr);library(utils);library(tidyverse);library(gridExtra);library(deSolve); library(stringi); library(stringr);
 library(ggthemes); library(deSolve)
 
@@ -300,6 +300,12 @@ for(i in 1:nrow(m)){
 cols = rev(c('gold', 'red', 'dodgerblue', 'seagreen'))
 darkcols = rev(c('gold', 'red', 'dodgerblue', 'seagreen'))
 
+# Get those save colors version without having to used transparency settings after
+colorRampPalette(c("white", "seagreen"))(10)[4]
+cols = rev(c('#FFE871', '#FF7171', '#82C1FF', '#8ABEA1'))
+darkcols = rev(c('#FFF1AA', '#FFAAAA', '#B4DAFF', '#B9D8C7'))
+
+
 
 focus.x = 0.3
 focus.C = 1.2
@@ -335,9 +341,9 @@ for(i in 1:length(Es)){
   out.2[,'time']<- seq(0, tail(time_burnin,1)+tail(time_sd, 1), timestep)
   
   # compliance level among non-recovered (in SD model, _test and _trace = 0)
-  lines((Sc + Ic + Ic_test + Ic_trace)/(Sn + Sc + In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.1, lwd = 1.5, col = alpha(cols[i], .6), lty = 1)
+  lines((Sc + Ic + Ic_test + Ic_trace)/(Sn + Sc + In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.1, lwd = 1.5, col = cols[i], lty = 1)
   out.test<- out.2[which(out.run.sd[,'time'] == I(startip+time_burnin)):nrow(out.2),]
-  lines((Sc + Ic + Ic_test + Ic_trace)/(Sn + Sc + In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.test, lwd = 1.5, col = alpha(darkcols[i], .4), lty = 2)
+  lines((Sc + Ic + Ic_test + Ic_trace)/(Sn + Sc + In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.test, lwd = 1.5, col = darkcols[i], lty = 2)
   
   
 }
@@ -362,7 +368,10 @@ out.Nointervention <- ode(y = ini,  times = times.noIntervention, func = sir_npi
 #lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.Nointervention, lwd = 3, col = 'lightgrey', lty = 1)
 x =  out.Nointervention[,'time']
 y = rowSums(out.Nointervention[,c('In', 'In_test', 'Ic', 'Ic_test', 'Ic_trace')])
-polygon(c(x[x>=0], max(x), 0), c(y[x>=0], 0, 0), col = alpha("grey", .3), border = NA)
+#polygon(c(x[x>=0], max(x), 0), c(y[x>=0], 0, 0), col = '#F0F0F0', border = NA)
+
+polygon(c(x[x>=0], max(x), 0), c(ifelse(y[x>=0] > 0.155, 0.155, y[x>=0]), 0, 0), col = '#F0F0F0', border = NA)
+
 
 
 for(i in 1:length(Es)){
@@ -384,9 +393,9 @@ for(i in 1:length(Es)){
   out.2[,'time']<- seq(0, tail(time_burnin,1)+tail(time_sd, 1), timestep)
   
   # amount of infected (in SD model, _test and _trace = 0)
-  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.1, lwd = 1.5, col = alpha(cols[i], .6), lty = 1)
+  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.1, lwd = 1.5, col = cols[i], lty = 1)
   out.test<- out.2[which(out.run.sd[,'time'] == I(startip+time_burnin)):nrow(out.2),]
-  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.test, lwd = 1.5, col = alpha(darkcols[i], .4), lty = 2)
+  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.test, lwd = 1.5, col = darkcols[i], lty = 2)
   
 }
 abline(v = time_burnin, lty = 2)
@@ -405,10 +414,10 @@ plot(1, axes = FALSE, type = "n", ylim = c(0, 1), xlim = c(0, 1))
 
 text(x = 0, y = 0.95, labels = 'Enforcement level:', adj = 0, cex = 0.8, font = 2)
 
-lines(x = c(0, 0.1), y = rep(0.85, 2), lwd = 2, col = alpha(cols[1], .6))
-lines(x = c(0, 0.1), y = rep(0.8, 2),  lwd = 2, col = alpha(cols[2], .6))
-lines(x = c(0, 0.1), y = rep(0.75, 2), lwd = 2, col = alpha(cols[3], .6))
-lines(x = c(0, 0.1), y = rep(0.7, 2),  lwd = 2, col = alpha(cols[4], .6))
+lines(x = c(0, 0.1), y = rep(0.85, 2), lwd = 2, col = cols[1])
+lines(x = c(0, 0.1), y = rep(0.8, 2),  lwd = 2, col = cols[2])
+lines(x = c(0, 0.1), y = rep(0.75, 2), lwd = 2, col = cols[3])
+lines(x = c(0, 0.1), y = rep(0.7, 2),  lwd = 2, col = cols[4])
 #lines(x = c(0, 0.1), y = rep(0.65, 2),  lwd = 2, col = alpha(cols[5], .6))
 
 text(x = 0.15, y = 0.85, labels = ': E < C', adj = 0, cex = 0.75)
@@ -419,8 +428,8 @@ text(x = 0.15, y = 0.7, labels = ': E >> C', adj = 0, cex = 0.75)
 
 text(x = 0, y = 0.55, labels = 'From t = 90:', adj = 0, cex = 0.8, font = 2)
 
-lines(x = c(0, 0.1), y = rep(0.45, 2),  lwd = 2, col = alpha('black', 1))
-lines(x = c(0, 0.1), y = rep(0.40, 2),  lwd = 2, col = alpha('black', 1), lty = 3)
+lines(x = c(0, 0.1), y = rep(0.45, 2),  lwd = 2, col = 'black')
+lines(x = c(0, 0.1), y = rep(0.40, 2),  lwd = 2, col = 'black', lty = 3)
 
 text(x = 0.15, y = 0.45, labels = ': without immunity passport', adj = 0, cex = 0.75)
 text(x = 0.15, y = 0.40, labels = ': with immunity passport', adj = 0, cex = 0.75)
@@ -484,8 +493,8 @@ for(i in 1:nrow(m)){
 #cols = c('gold', 'red', 'dodgerblue', 'seagreen', 'darkorchid')
 #darkcols = c('gold', 'red', 'dodgerblue', 'seagreen', 'darkorchid')
 
-cols = rev(c('gold', 'red', 'dodgerblue', 'seagreen'))
-darkcols = rev(c('gold', 'red', 'dodgerblue', 'seagreen'))
+cols = rev(c('#FFE871', '#FF7171', '#82C1FF', '#8ABEA1'))
+darkcols = rev(c('#FFF1AA', '#FFAAAA', '#B4DAFF', '#B9D8C7'))
 
 
 focus.x = 0.3
@@ -522,9 +531,9 @@ for(i in 1:length(Es)){
   out.2[,'time']<- seq(0, tail(time_burnin,1)+tail(time_NPI, 1), timestep)
   
   # compliance level among non-recovered (in SD model, _test and _trace = 0)
-  lines((Sc + Ic + Ic_test + Ic_trace)/(Sn + Sc + In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.1, lwd = 1.5, col = alpha(cols[i], .6), lty = 1)
+  lines((Sc + Ic + Ic_test + Ic_trace)/(Sn + Sc + In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.1, lwd = 1.5, col = cols[i], lty = 1)
   out.test<- out.2[which(out.run.NPI[,'time'] == I(startip+time_burnin)):nrow(out.2),]
-  lines((Sc + Ic + Ic_test + Ic_trace)/(Sn + Sc + In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.test, lwd = 1.5, col = alpha(darkcols[i], .4), lty = 2)
+  lines((Sc + Ic + Ic_test + Ic_trace)/(Sn + Sc + In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.test, lwd = 1.5, col = darkcols[i], lty = 2)
   
   
 }
@@ -547,7 +556,9 @@ out.Nointervention <- ode(y = ini,  times = times.noIntervention, func = sir_npi
 #lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.Nointervention, lwd = 3, col = 'lightgrey', lty = 1)
 x =  out.Nointervention[,'time']
 y = rowSums(out.Nointervention[,c('In', 'In_test', 'Ic', 'Ic_test', 'Ic_trace')])
-polygon(c(x[x>=0], max(x), 0), c(y[x>=0], 0, 0), col = alpha("grey", .3), border = NA)
+#polygon(c(x[x>=0], max(x), 0), c(y[x>=0], 0, 0), col = '#F0F0F0', border = NA)
+
+polygon(c(x[x>=0], max(x), 0), c(ifelse(y[x>=0] > 0.155, 0.155, y[x>=0]), 0, 0), col = '#F0F0F0', border = NA)
 
 
 for(i in 1:length(Es)){
@@ -569,9 +580,9 @@ for(i in 1:length(Es)){
   out.2[,'time']<- seq(0, tail(time_burnin,1)+tail(time_NPI, 1), timestep)
   
   # amount of infected (in SD model, _test and _trace = 0)
-  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.1, lwd = 1.5, col = alpha(cols[i], .6), lty = 1)
+  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.1, lwd = 1.5, col = cols[i], lty = 1)
   out.test<- out.2[which(out.run.NPI[,'time'] == I(startip+time_burnin)):nrow(out.2),]
-  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.test, lwd = 1.5, col = alpha(darkcols[i], .4), lty = 2)
+  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.test, lwd = 1.5, col = darkcols[i], lty = 2)
   
 }
 
@@ -589,10 +600,10 @@ plot(1, axes = FALSE, type = "n", ylim = c(0, 1), xlim = c(0, 1))
 
 text(x = 0, y = 0.95, labels = 'Enforcement level:', adj = 0, cex = 0.8, font = 2)
 
-lines(x = c(0, 0.1), y = rep(0.85, 2), lwd = 2, col = alpha(cols[1], .6))
-lines(x = c(0, 0.1), y = rep(0.8, 2),  lwd = 2, col = alpha(cols[2], .6))
-lines(x = c(0, 0.1), y = rep(0.75, 2), lwd = 2, col = alpha(cols[3], .6))
-lines(x = c(0, 0.1), y = rep(0.7, 2),  lwd = 2, col = alpha(cols[4], .6))
+lines(x = c(0, 0.1), y = rep(0.85, 2), lwd = 2, col = cols[1])
+lines(x = c(0, 0.1), y = rep(0.8, 2),  lwd = 2, col = cols[2])
+lines(x = c(0, 0.1), y = rep(0.75, 2), lwd = 2, col = cols[3])
+lines(x = c(0, 0.1), y = rep(0.7, 2),  lwd = 2, col = cols[4])
 #lines(x = c(0, 0.1), y = rep(0.65, 2),  lwd = 2, col = alpha(cols[5], .6))
 
 text(x = 0.15, y = 0.85, labels = ': E < C', adj = 0, cex = 0.75)
@@ -603,8 +614,8 @@ text(x = 0.15, y = 0.7, labels = ': E >> C', adj = 0, cex = 0.75)
 
 text(x = 0, y = 0.55, labels = 'From t = 90:', adj = 0, cex = 0.8, font = 2)
 
-lines(x = c(0, 0.1), y = rep(0.45, 2),  lwd = 1.5, col = alpha('black', 1))
-lines(x = c(0, 0.1), y = rep(0.40, 2),  lwd = 1.5, col = alpha('black', 1), lty = 3)
+lines(x = c(0, 0.1), y = rep(0.45, 2),  lwd = 1.5, col = 'black')
+lines(x = c(0, 0.1), y = rep(0.40, 2),  lwd = 1.5, col = 'black', lty = 3)
 
 text(x = 0.15, y = 0.45, labels = ': without immunity passport', adj = 0, cex = 0.75)
 text(x = 0.15, y = 0.40, labels = ': with immunity passport', adj = 0, cex = 0.75)
@@ -619,9 +630,8 @@ dev.off()
 # need to empty enviroenment and re-run part [1] otherwise I think some params mess up
 #source('./scripts/2021_MODELSetup_alter.R')
 
-
-cols = rev(c('gold', 'red', 'dodgerblue', 'seagreen'))
-darkcols = rev(c('gold', 'red', 'dodgerblue', 'seagreen'))
+#cols = rev(c('gold', 'red', 'dodgerblue', 'seagreen'))
+#darkcols = rev(c('gold', 'red', 'dodgerblue', 'seagreen'))
 
 focus.x = 0.3
 focus.C = 1.2
@@ -630,7 +640,7 @@ focus.a = 4
 Es = c(1, 1.2, 1.3, 1.4)
 
 
-pdf('./output/figures/FigureS6_SD_dynamic_vary.pdf', width = (11+1+1)/2.54, height = (11+1+1)/2.54, pointsize = 7)
+pdf('./output/figures/FigureS5_SD_dynamic_vary.pdf', width = (11+1+1)/2.54, height = (11+1+1)/2.54, pointsize = 7)
 
 
 par(mfrow = c(3,3),
@@ -674,7 +684,9 @@ out.Nointervention <- ode(y = ini,  times = times.noIntervention, func = sir_npi
 #lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.Nointervention, lwd = 3, col = 'lightgrey', lty = 1)
 x =  out.Nointervention[,'time']
 y = rowSums(out.Nointervention[,c('In', 'In_test', 'Ic', 'Ic_test', 'Ic_trace')])
-polygon(c(x[x>=0], max(x), 0), c(y[x>=0], 0, 0), col = alpha("grey", .3), border = NA)
+polygon(c(x[x>=0], max(x), 0), c(ifelse(y[x>=0] > 0.155, 0.155, y[x>=0]), 0, 0), col = '#F0F0F0', border = NA)
+
+
 
 for(i in 1:length(Es)){
   
@@ -695,9 +707,9 @@ for(i in 1:length(Es)){
   out.2[,'time']<- seq(0, tail(time_burnin,1)+tail(time_sd, 1), timestep)
   
   # amount of infected (in SD model, _test and _trace = 0)
-  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.1, lwd = 1.5, col = alpha(cols[i], .6), lty = 1)
+  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.1, lwd = 1.5, col = cols[i], lty = 1)
   out.test<- out.2[which(out.run.sd[,'time'] == I(startip+time_burnin)):nrow(out.2),]
-  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.test, lwd = 1.5, col = alpha(darkcols[i], .4), lty = 2)
+  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.test, lwd = 1.5, col = darkcols[i], lty = 2)
   
 }
 abline(v = time_burnin, lty = 2)
@@ -750,7 +762,7 @@ out.Nointervention <- ode(y = ini,  times = times.noIntervention, func = sir_npi
 #lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.Nointervention, lwd = 3, col = 'lightgrey', lty = 1)
 x =  out.Nointervention[,'time']
 y = rowSums(out.Nointervention[,c('In', 'In_test', 'Ic', 'Ic_test', 'Ic_trace')])
-polygon(c(x[x>=0], max(x), 0), c(y[x>=0], 0, 0), col = alpha("grey", .3), border = NA)
+polygon(c(x[x>=0], max(x), 0), c(ifelse(y[x>=0] > 0.155, 0.155, y[x>=0]), 0, 0), col = '#F0F0F0', border = NA)
 
 for(i in 1:length(Es)){
   
@@ -771,9 +783,9 @@ for(i in 1:length(Es)){
   out.2[,'time']<- seq(0, tail(time_burnin,1)+tail(time_sd, 1), timestep)
   
   # amount of infected (in SD model, _test and _trace = 0)
-  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.1, lwd = 1.5, col = alpha(cols[i], .6), lty = 1)
+  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.1, lwd = 1.5, col = cols[i], lty = 1)
   out.test<- out.2[which(out.run.sd[,'time'] == I(startip+time_burnin)):nrow(out.2),]
-  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.test, lwd = 1.5, col = alpha(darkcols[i], .4), lty = 2)
+  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.test, lwd = 1.5, col = darkcols[i], lty = 2)
   
 }
 abline(v = time_burnin, lty = 2)
@@ -826,7 +838,7 @@ out.Nointervention <- ode(y = ini,  times = times.noIntervention, func = sir_npi
 #lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.Nointervention, lwd = 3, col = 'lightgrey', lty = 1)
 x =  out.Nointervention[,'time']
 y = rowSums(out.Nointervention[,c('In', 'In_test', 'Ic', 'Ic_test', 'Ic_trace')])
-polygon(c(x[x>=0], max(x), 0), c(y[x>=0], 0, 0), col = alpha("grey", .3), border = NA)
+polygon(c(x[x>=0], max(x), 0), c(ifelse(y[x>=0] > 0.155, 0.155, y[x>=0]), 0, 0), col = '#F0F0F0', border = NA)
 
 for(i in 1:length(Es)){
   
@@ -847,9 +859,9 @@ for(i in 1:length(Es)){
   out.2[,'time']<- seq(0, tail(time_burnin,1)+tail(time_sd, 1), timestep)
   
   # amount of infected (in SD model, _test and _trace = 0)
-  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.1, lwd = 1.5, col = alpha(cols[i], .6), lty = 1)
+  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.1, lwd = 1.5, col = cols[i], lty = 1)
   out.test<- out.2[which(out.run.sd[,'time'] == I(startip+time_burnin)):nrow(out.2),]
-  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.test, lwd = 1.5, col = alpha(darkcols[i], .4), lty = 2)
+  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.test, lwd = 1.5, col = darkcols[i], lty = 2)
   
 }
 abline(v = time_burnin, lty = 2)
@@ -906,7 +918,7 @@ out.Nointervention <- ode(y = ini,  times = times.noIntervention, func = sir_npi
 #lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.Nointervention, lwd = 3, col = 'lightgrey', lty = 1)
 x =  out.Nointervention[,'time']
 y = rowSums(out.Nointervention[,c('In', 'In_test', 'Ic', 'Ic_test', 'Ic_trace')])
-polygon(c(x[x>=0], max(x), 0), c(y[x>=0], 0, 0), col = alpha("grey", .3), border = NA)
+polygon(c(x[x>=0], max(x), 0), c(ifelse(y[x>=0] > 0.155, 0.155, y[x>=0]), 0, 0), col = '#F0F0F0', border = NA)
 
 for(i in 1:length(Es)){
   
@@ -927,9 +939,9 @@ for(i in 1:length(Es)){
   out.2[,'time']<- seq(0, tail(time_burnin,1)+tail(time_sd, 1), timestep)
   
   # amount of infected (in SD model, _test and _trace = 0)
-  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.1, lwd = 1.5, col = alpha(cols[i], .6), lty = 1)
+  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.1, lwd = 1.5, col = cols[i], lty = 1)
   out.test<- out.2[which(out.run.sd[,'time'] == I(startip+time_burnin)):nrow(out.2),]
-  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.test, lwd = 1.5, col = alpha(darkcols[i], .4), lty = 2)
+  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.test, lwd = 1.5, col = darkcols[i], lty = 2)
   
 }
 abline(v = time_burnin, lty = 2)
@@ -984,7 +996,7 @@ out.Nointervention <- ode(y = ini,  times = times.noIntervention, func = sir_npi
 #lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.Nointervention, lwd = 3, col = 'lightgrey', lty = 1)
 x =  out.Nointervention[,'time']
 y = rowSums(out.Nointervention[,c('In', 'In_test', 'Ic', 'Ic_test', 'Ic_trace')])
-polygon(c(x[x>=0], max(x), 0), c(y[x>=0], 0, 0), col = alpha("grey", .3), border = NA)
+polygon(c(x[x>=0], max(x), 0), c(ifelse(y[x>=0] > 0.155, 0.155, y[x>=0]), 0, 0), col = '#F0F0F0', border = NA)
 
 for(i in 1:length(Es)){
   
@@ -1005,9 +1017,9 @@ for(i in 1:length(Es)){
   out.2[,'time']<- seq(0, tail(time_burnin,1)+tail(time_sd, 1), timestep)
   
   # amount of infected (in SD model, _test and _trace = 0)
-  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.1, lwd = 1.5, col = alpha(cols[i], .6), lty = 1)
+  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.1, lwd = 1.5, col = cols[i], lty = 1)
   out.test<- out.2[which(out.run.sd[,'time'] == I(startip+time_burnin)):nrow(out.2),]
-  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.test, lwd = 1.5, col = alpha(darkcols[i], .4), lty = 2)
+  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.test, lwd = 1.5, col = darkcols[i], lty = 2)
   
 }
 abline(v = time_burnin, lty = 2)
@@ -1058,7 +1070,7 @@ out.Nointervention <- ode(y = ini,  times = times.noIntervention, func = sir_npi
 #lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.Nointervention, lwd = 3, col = 'lightgrey', lty = 1)
 x =  out.Nointervention[,'time']
 y = rowSums(out.Nointervention[,c('In', 'In_test', 'Ic', 'Ic_test', 'Ic_trace')])
-polygon(c(x[x>=0], max(x), 0), c(y[x>=0], 0, 0), col = alpha("grey", .3), border = NA)
+polygon(c(x[x>=0], max(x), 0), c(ifelse(y[x>=0] > 0.155, 0.155, y[x>=0]), 0, 0), col = '#F0F0F0', border = NA)
 
 for(i in 1:length(Es)){
   
@@ -1079,9 +1091,9 @@ for(i in 1:length(Es)){
   out.2[,'time']<- seq(0, tail(time_burnin,1)+tail(time_sd, 1), timestep)
   
   # amount of infected (in SD model, _test and _trace = 0)
-  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.1, lwd = 1.5, col = alpha(cols[i], .6), lty = 1)
+  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.1, lwd = 1.5, col = cols[i], lty = 1)
   out.test<- out.2[which(out.run.sd[,'time'] == I(startip+time_burnin)):nrow(out.2),]
-  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.test, lwd = 1.5, col = alpha(darkcols[i], .4), lty = 2)
+  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.test, lwd = 1.5, col = darkcols[i], lty = 2)
   
 }
 abline(v = time_burnin, lty = 2)
@@ -1137,7 +1149,7 @@ out.Nointervention <- ode(y = ini,  times = times.noIntervention, func = sir_npi
 #lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.Nointervention, lwd = 3, col = 'lightgrey', lty = 1)
 x =  out.Nointervention[,'time']
 y = rowSums(out.Nointervention[,c('In', 'In_test', 'Ic', 'Ic_test', 'Ic_trace')])
-polygon(c(x[x>=0], max(x), 0), c(y[x>=0], 0, 0), col = alpha("grey", .3), border = NA)
+polygon(c(x[x>=0], max(x), 0), c(ifelse(y[x>=0] > 0.155, 0.155, y[x>=0]), 0, 0), col = '#F0F0F0', border = NA)
 
 for(i in 1:length(Es)){
   
@@ -1158,9 +1170,9 @@ for(i in 1:length(Es)){
   out.2[,'time']<- seq(0, tail(time_burnin,1)+tail(time_sd, 1), timestep)
   
   # amount of infected (in SD model, _test and _trace = 0)
-  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.1, lwd = 1.5, col = alpha(cols[i], .6), lty = 1)
+  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.1, lwd = 1.5, col = cols[i], lty = 1)
   out.test<- out.2[which(out.run.sd[,'time'] == I(startip+time_burnin)):nrow(out.2),]
-  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.test, lwd = 1.5, col = alpha(darkcols[i], .4), lty = 2)
+  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.test, lwd = 1.5, col = darkcols[i], lty = 2)
   
 }
 abline(v = time_burnin, lty = 2)
@@ -1215,7 +1227,7 @@ out.Nointervention <- ode(y = ini,  times = times.noIntervention, func = sir_npi
 #lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.Nointervention, lwd = 3, col = 'lightgrey', lty = 1)
 x =  out.Nointervention[,'time']
 y = rowSums(out.Nointervention[,c('In', 'In_test', 'Ic', 'Ic_test', 'Ic_trace')])
-polygon(c(x[x>=0], max(x), 0), c(y[x>=0], 0, 0), col = alpha("grey", .3), border = NA)
+polygon(c(x[x>=0], max(x), 0), c(ifelse(y[x>=0] > 0.155, 0.155, y[x>=0]), 0, 0), col = '#F0F0F0', border = NA)
 
 for(i in 1:length(Es)){
   
@@ -1236,9 +1248,9 @@ for(i in 1:length(Es)){
   out.2[,'time']<- seq(0, tail(time_burnin,1)+tail(time_sd, 1), timestep)
   
   # amount of infected (in SD model, _test and _trace = 0)
-  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.1, lwd = 1.5, col = alpha(cols[i], .6), lty = 1)
+  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.1, lwd = 1.5, col = cols[i], lty = 1)
   out.test<- out.2[which(out.run.sd[,'time'] == I(startip+time_burnin)):nrow(out.2),]
-  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.test, lwd = 1.5, col = alpha(darkcols[i], .4), lty = 2)
+  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.test, lwd = 1.5, col = darkcols[i], lty = 2)
   
 }
 abline(v = time_burnin, lty = 2)
@@ -1289,7 +1301,7 @@ out.Nointervention <- ode(y = ini,  times = times.noIntervention, func = sir_npi
 #lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.Nointervention, lwd = 3, col = 'lightgrey', lty = 1)
 x =  out.Nointervention[,'time']
 y = rowSums(out.Nointervention[,c('In', 'In_test', 'Ic', 'Ic_test', 'Ic_trace')])
-polygon(c(x[x>=0], max(x), 0), c(y[x>=0], 0, 0), col = alpha("grey", .3), border = NA)
+polygon(c(x[x>=0], max(x), 0), c(ifelse(y[x>=0] > 0.155, 0.155, y[x>=0]), 0, 0), col = '#F0F0F0', border = NA)
 
 for(i in 1:length(Es)){
   
@@ -1310,9 +1322,9 @@ for(i in 1:length(Es)){
   out.2[,'time']<- seq(0, tail(time_burnin,1)+tail(time_sd, 1), timestep)
   
   # amount of infected (in SD model, _test and _trace = 0)
-  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.1, lwd = 1.5, col = alpha(cols[i], .6), lty = 1)
+  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.1, lwd = 1.5, col = cols[i], lty = 1)
   out.test<- out.2[which(out.run.sd[,'time'] == I(startip+time_burnin)):nrow(out.2),]
-  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.test, lwd = 1.5, col = alpha(darkcols[i], .4), lty = 2)
+  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.test, lwd = 1.5, col = darkcols[i], lty = 2)
   
 }
 abline(v = time_burnin, lty = 2)
@@ -1338,8 +1350,9 @@ dev.off()
 
 # Same here, empty environeemnt and re-run part [1] first to make sure no mess up between parts of codes
 
-cols = rev(c('gold', 'red', 'dodgerblue', 'seagreen'))
-darkcols = rev(c('gold', 'red', 'dodgerblue', 'seagreen'))
+cols = rev(c('#FFE871', '#FF7171', '#82C1FF', '#8ABEA1'))
+darkcols = rev(c('#FFF1AA', '#FFAAAA', '#B4DAFF', '#B9D8C7'))
+
 
 focus.x = 0.3
 focus.C = 1.2
@@ -1350,7 +1363,7 @@ focus.tau = 5.1
 #Es = c(1, 1.2, 1.3, 1.4)
 Es = c(1.1, 1.2, 1.25, 1.3)
 
-pdf('./output/figures/FigureS7_TTI_dynamic_vary.pdf', width = (11+1+1)/2.54, height = (11+1+1)/2.54, pointsize = 7)
+pdf('./output/figures/FigureS6_TTI_dynamic_vary.pdf', width = (11+1+1)/2.54, height = (11+1+1)/2.54, pointsize = 7)
 
 
 par(mfrow = c(3,3),
@@ -1393,7 +1406,7 @@ out.Nointervention <- ode(y = ini,  times = times.noIntervention, func = sir_npi
 #lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.Nointervention, lwd = 3, col = 'lightgrey', lty = 1)
 x =  out.Nointervention[,'time']
 y = rowSums(out.Nointervention[,c('In', 'In_test', 'Ic', 'Ic_test', 'Ic_trace')])
-polygon(c(x[x>=0], max(x), 0), c(y[x>=0], 0, 0), col = alpha("grey", .3), border = NA)
+polygon(c(x[x>=0], max(x), 0), c(ifelse(y[x>=0] > 0.155, 0.155, y[x>=0]), 0, 0), col = '#F0F0F0', border = NA)
 
 
 for(i in 1:length(Es)){
@@ -1415,9 +1428,9 @@ for(i in 1:length(Es)){
   out.2[,'time']<- seq(0, tail(time_burnin,1)+tail(time_NPI, 1), timestep)
   
   # amount of infected (in SD model, _test and _trace = 0)
-  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.1, lwd = 1.5, col = alpha(cols[i], .6), lty = 1)
+  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.1, lwd = 1.5, col = cols[i], lty = 1)
   out.test<- out.2[which(out.run.NPI[,'time'] == I(startip+time_burnin)):nrow(out.2),]
-  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.test, lwd = 1.5, col = alpha(darkcols[i], .4), lty = 2)
+  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.test, lwd = 1.5, col = darkcols[i], lty = 2)
   
 }
 
@@ -1469,7 +1482,7 @@ out.Nointervention <- ode(y = ini,  times = times.noIntervention, func = sir_npi
 #lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.Nointervention, lwd = 3, col = 'lightgrey', lty = 1)
 x =  out.Nointervention[,'time']
 y = rowSums(out.Nointervention[,c('In', 'In_test', 'Ic', 'Ic_test', 'Ic_trace')])
-polygon(c(x[x>=0], max(x), 0), c(y[x>=0], 0, 0), col = alpha("grey", .3), border = NA)
+polygon(c(x[x>=0], max(x), 0), c(ifelse(y[x>=0] > 0.155, 0.155, y[x>=0]), 0, 0), col = '#F0F0F0', border = NA)
 
 
 for(i in 1:length(Es)){
@@ -1491,9 +1504,9 @@ for(i in 1:length(Es)){
   out.2[,'time']<- seq(0, tail(time_burnin,1)+tail(time_NPI, 1), timestep)
   
   # amount of infected (in SD model, _test and _trace = 0)
-  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.1, lwd = 1.5, col = alpha(cols[i], .6), lty = 1)
+  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.1, lwd = 1.5, col = cols[i], lty = 1)
   out.test<- out.2[which(out.run.NPI[,'time'] == I(startip+time_burnin)):nrow(out.2),]
-  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.test, lwd = 1.5, col = alpha(darkcols[i], .4), lty = 2)
+  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.test, lwd = 1.5, col = darkcols[i], lty = 2)
   
 }
 
@@ -1543,7 +1556,7 @@ out.Nointervention <- ode(y = ini,  times = times.noIntervention, func = sir_npi
 #lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.Nointervention, lwd = 3, col = 'lightgrey', lty = 1)
 x =  out.Nointervention[,'time']
 y = rowSums(out.Nointervention[,c('In', 'In_test', 'Ic', 'Ic_test', 'Ic_trace')])
-polygon(c(x[x>=0], max(x), 0), c(y[x>=0], 0, 0), col = alpha("grey", .3), border = NA)
+polygon(c(x[x>=0], max(x), 0), c(ifelse(y[x>=0] > 0.155, 0.155, y[x>=0]), 0, 0), col = '#F0F0F0', border = NA)
 
 
 for(i in 1:length(Es)){
@@ -1565,9 +1578,9 @@ for(i in 1:length(Es)){
   out.2[,'time']<- seq(0, tail(time_burnin,1)+tail(time_NPI, 1), timestep)
   
   # amount of infected (in SD model, _test and _trace = 0)
-  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.1, lwd = 1.5, col = alpha(cols[i], .6), lty = 1)
+  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.1, lwd = 1.5, col = cols[i], lty = 1)
   out.test<- out.2[which(out.run.NPI[,'time'] == I(startip+time_burnin)):nrow(out.2),]
-  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.test, lwd = 1.5, col = alpha(darkcols[i], .4), lty = 2)
+  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.test, lwd = 1.5, col = darkcols[i], lty = 2)
   
 }
 
@@ -1623,7 +1636,7 @@ out.Nointervention <- ode(y = ini,  times = times.noIntervention, func = sir_npi
 #lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.Nointervention, lwd = 3, col = 'lightgrey', lty = 1)
 x =  out.Nointervention[,'time']
 y = rowSums(out.Nointervention[,c('In', 'In_test', 'Ic', 'Ic_test', 'Ic_trace')])
-polygon(c(x[x>=0], max(x), 0), c(y[x>=0], 0, 0), col = alpha("grey", .3), border = NA)
+polygon(c(x[x>=0], max(x), 0), c(ifelse(y[x>=0] > 0.155, 0.155, y[x>=0]), 0, 0), col = '#F0F0F0', border = NA)
 
 
 for(i in 1:length(Es)){
@@ -1645,9 +1658,9 @@ for(i in 1:length(Es)){
   out.2[,'time']<- seq(0, tail(time_burnin,1)+tail(time_NPI, 1), timestep)
   
   # amount of infected (in SD model, _test and _trace = 0)
-  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.1, lwd = 1.5, col = alpha(cols[i], .6), lty = 1)
+  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.1, lwd = 1.5, col = cols[i], lty = 1)
   out.test<- out.2[which(out.run.NPI[,'time'] == I(startip+time_burnin)):nrow(out.2),]
-  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.test, lwd = 1.5, col = alpha(darkcols[i], .4), lty = 2)
+  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.test, lwd = 1.5, col = darkcols[i], lty = 2)
   
 }
 
@@ -1697,7 +1710,7 @@ out.Nointervention <- ode(y = ini,  times = times.noIntervention, func = sir_npi
 #lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.Nointervention, lwd = 3, col = 'lightgrey', lty = 1)
 x =  out.Nointervention[,'time']
 y = rowSums(out.Nointervention[,c('In', 'In_test', 'Ic', 'Ic_test', 'Ic_trace')])
-polygon(c(x[x>=0], max(x), 0), c(y[x>=0], 0, 0), col = alpha("grey", .3), border = NA)
+polygon(c(x[x>=0], max(x), 0), c(ifelse(y[x>=0] > 0.155, 0.155, y[x>=0]), 0, 0), col = '#F0F0F0', border = NA)
 
 
 for(i in 1:length(Es)){
@@ -1719,9 +1732,9 @@ for(i in 1:length(Es)){
   out.2[,'time']<- seq(0, tail(time_burnin,1)+tail(time_NPI, 1), timestep)
   
   # amount of infected (in SD model, _test and _trace = 0)
-  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.1, lwd = 1.5, col = alpha(cols[i], .6), lty = 1)
+  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.1, lwd = 1.5, col = cols[i], lty = 1)
   out.test<- out.2[which(out.run.NPI[,'time'] == I(startip+time_burnin)):nrow(out.2),]
-  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.test, lwd = 1.5, col = alpha(darkcols[i], .4), lty = 2)
+  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.test, lwd = 1.5, col = darkcols[i], lty = 2)
   
 }
 
@@ -1769,7 +1782,7 @@ out.Nointervention <- ode(y = ini,  times = times.noIntervention, func = sir_npi
 #lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.Nointervention, lwd = 3, col = 'lightgrey', lty = 1)
 x =  out.Nointervention[,'time']
 y = rowSums(out.Nointervention[,c('In', 'In_test', 'Ic', 'Ic_test', 'Ic_trace')])
-polygon(c(x[x>=0], max(x), 0), c(y[x>=0], 0, 0), col = alpha("grey", .3), border = NA)
+polygon(c(x[x>=0], max(x), 0), c(ifelse(y[x>=0] > 0.155, 0.155, y[x>=0]), 0, 0), col = '#F0F0F0', border = NA)
 
 
 for(i in 1:length(Es)){
@@ -1791,9 +1804,9 @@ for(i in 1:length(Es)){
   out.2[,'time']<- seq(0, tail(time_burnin,1)+tail(time_NPI, 1), timestep)
   
   # amount of infected (in SD model, _test and _trace = 0)
-  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.1, lwd = 1.5, col = alpha(cols[i], .6), lty = 1)
+  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.1, lwd = 1.5, col = cols[i], lty = 1)
   out.test<- out.2[which(out.run.NPI[,'time'] == I(startip+time_burnin)):nrow(out.2),]
-  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.test, lwd = 1.5, col = alpha(darkcols[i], .4), lty = 2)
+  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.test, lwd = 1.5, col = darkcols[i], lty = 2)
   
 }
 
@@ -1844,7 +1857,7 @@ out.Nointervention <- ode(y = ini,  times = times.noIntervention, func = sir_npi
 #lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.Nointervention, lwd = 3, col = 'lightgrey', lty = 1)
 x =  out.Nointervention[,'time']
 y = rowSums(out.Nointervention[,c('In', 'In_test', 'Ic', 'Ic_test', 'Ic_trace')])
-polygon(c(x[x>=0], max(x), 0), c(y[x>=0], 0, 0), col = alpha("grey", .3), border = NA)
+polygon(c(x[x>=0], max(x), 0), c(ifelse(y[x>=0] > 0.155, 0.155, y[x>=0]), 0, 0), col = '#F0F0F0', border = NA)
 
 
 for(i in 1:length(Es)){
@@ -1866,9 +1879,9 @@ for(i in 1:length(Es)){
   out.2[,'time']<- seq(0, tail(time_burnin,1)+tail(time_NPI, 1), timestep)
   
   # amount of infected (in SD model, _test and _trace = 0)
-  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.1, lwd = 1.5, col = alpha(cols[i], .6), lty = 1)
+  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.1, lwd = 1.5, col = cols[i], lty = 1)
   out.test<- out.2[which(out.run.NPI[,'time'] == I(startip+time_burnin)):nrow(out.2),]
-  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.test, lwd = 1.5, col = alpha(darkcols[i], .4), lty = 2)
+  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.test, lwd = 1.5, col = darkcols[i], lty = 2)
   
 }
 
@@ -1918,7 +1931,7 @@ out.Nointervention <- ode(y = ini,  times = times.noIntervention, func = sir_npi
 #lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.Nointervention, lwd = 3, col = 'lightgrey', lty = 1)
 x =  out.Nointervention[,'time']
 y = rowSums(out.Nointervention[,c('In', 'In_test', 'Ic', 'Ic_test', 'Ic_trace')])
-polygon(c(x[x>=0], max(x), 0), c(y[x>=0], 0, 0), col = alpha("grey", .3), border = NA)
+polygon(c(x[x>=0], max(x), 0), c(ifelse(y[x>=0] > 0.155, 0.155, y[x>=0]), 0, 0), col = '#F0F0F0', border = NA)
 
 
 for(i in 1:length(Es)){
@@ -1940,9 +1953,9 @@ for(i in 1:length(Es)){
   out.2[,'time']<- seq(0, tail(time_burnin,1)+tail(time_NPI, 1), timestep)
   
   # amount of infected (in SD model, _test and _trace = 0)
-  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.1, lwd = 1.5, col = alpha(cols[i], .6), lty = 1)
+  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.1, lwd = 1.5, col = cols[i], lty = 1)
   out.test<- out.2[which(out.run.NPI[,'time'] == I(startip+time_burnin)):nrow(out.2),]
-  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.test, lwd = 1.5, col = alpha(darkcols[i], .4), lty = 2)
+  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.test, lwd = 1.5, col = darkcols[i], lty = 2)
   
 }
 
@@ -1990,7 +2003,7 @@ out.Nointervention <- ode(y = ini,  times = times.noIntervention, func = sir_npi
 #lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.Nointervention, lwd = 3, col = 'lightgrey', lty = 1)
 x =  out.Nointervention[,'time']
 y = rowSums(out.Nointervention[,c('In', 'In_test', 'Ic', 'Ic_test', 'Ic_trace')])
-polygon(c(x[x>=0], max(x), 0), c(y[x>=0], 0, 0), col = alpha("grey", .3), border = NA)
+polygon(c(x[x>=0], max(x), 0), c(ifelse(y[x>=0] > 0.155, 0.155, y[x>=0]), 0, 0), col = '#F0F0F0', border = NA)
 
 
 for(i in 1:length(Es)){
@@ -2012,9 +2025,9 @@ for(i in 1:length(Es)){
   out.2[,'time']<- seq(0, tail(time_burnin,1)+tail(time_NPI, 1), timestep)
   
   # amount of infected (in SD model, _test and _trace = 0)
-  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.1, lwd = 1.5, col = alpha(cols[i], .6), lty = 1)
+  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.1, lwd = 1.5, col = cols[i], lty = 1)
   out.test<- out.2[which(out.run.NPI[,'time'] == I(startip+time_burnin)):nrow(out.2),]
-  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.test, lwd = 1.5, col = alpha(darkcols[i], .4), lty = 2)
+  lines((In + In_test + Ic + Ic_test + Ic_trace) ~ time, data = out.test, lwd = 1.5, col = darkcols[i], lty = 2)
   
 }
 
